@@ -1,0 +1,50 @@
+# i3blocks configuration file
+# Place this in ~/.config/i3blocks/config
+
+# Global settings
+command=$SCRIPT_DIR/$BLOCK_NAME
+separator=true
+separator_block_width=15
+markup=pango
+
+[vpn]
+label=VPN: 
+command=nmcli con show --active | grep vpn >/dev/null && echo "On" || echo "Off"
+interval=10
+color=#fab387
+
+[disk]
+label=Disk: 
+command=df -h / | awk 'NR==2 {print $4}'
+interval=30
+color=#f5e0dc
+
+[cpu]
+label=CPU: 
+command=grep 'cpu ' /proc/stat | awk '{usage=int(($2+$4)*100/($2+$4+$5)); print usage "%"}'
+interval=5
+color=#f9e2af
+
+[memory]
+label=Mem: 
+command=free | awk '/^Mem:/ {printf "%d%%\n", $3*100/$2}'
+interval=1
+color=#b4befe
+
+[battery]
+label=⚡️
+command=acpi | grep -o '[0-9]\+%\|Charging' | head -2 | tr '\n' ' ' | awk '{if ($2 == "Charging") print "<span color=\"#94e2d5\">⚡️ " $1 "</span>"; else print ($1+0 <= 20) ? "<span color=\"#f38ba8\">" $1 "</span>" : ($1+0 <= 50) ? "<span color=\"#f9e2af\">" $1 "</span>" : "<span color=\"#a6e3a1\">" $1 "</span>";}'
+interval=1
+color=#a6e3a1
+
+[volume]
+label=Vol: 
+command=pactl get-sink-volume @DEFAULT_SINK@ | grep -o '[0-9]\+%' | head -1 | tr -d '%' | xargs -I {} sh -c 'if pactl get-sink-mute @DEFAULT_SINK@ | grep -q "yes"; then echo "<span color=\"#f38ba8\">🔇 Mute</span>"; elif [ {} -eq 0 ]; then echo "<span color=\"#f38ba8\">🔈 {}%</span>"; elif [ {} -le 50 ]; then echo "<span color=\"#a6e3a1\">🔉 {}%</span>"; else echo "<span color=\"#cba6f7\">🔊 {}%</span>"; fi'
+interval=1
+signal=10
+color=#cba6f7
+
+[time]
+command=date '+%d-%m-%Y %H:%M'
+interval=1
+color=#cdd6f4

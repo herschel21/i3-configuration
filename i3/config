@@ -1,0 +1,240 @@
+# i3 config file (v4)
+
+# Set thin border for all windows
+for_window [class="^.*"] border pixel 2
+gaps inner 0
+gaps outer 0
+smart_gaps on
+
+set $mod Mod4
+
+# Startup applications
+exec_always --no-startup-id ~/.config/i3/display_setup.sh
+
+# Background image and compositor (picom)
+exec_always --no-startup-id feh --bg-fill ~/homescreen.png
+
+# Start picom compositor for transparency and animations
+exec_always --no-startup-id pkill picom; picom --config ~/.config/picom/picom.conf
+
+# Merge Xresources settings with a small delay
+exec --no-startup-id (sleep 1 && xrdb -merge ~/.Xresources)
+
+# Set keyboard layout (with delay)
+exec --no-startup-id (sleep 1 && setxkbmap -option ctrl:nocaps)
+
+# touchpad settings
+exec_always --no-startup-id xinput set-prop "ELAN072B:00 04F3:31BF Touchpad" "libinput Tapping Enabled" 1
+exec_always --no-startup-id xinput set-prop "ELAN072B:00 04F3:31BF Touchpad" "libinput Natural Scrolling Enabled" 1
+
+# Start dex (for autostart .desktop files) after a small delay
+exec --no-startup-id (sleep 1 && dex --autostart --environment i3)
+
+# Lock screen before suspend (using i3lock)
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+
+# Start nm-applet (for managing wireless networks)
+exec --no-startup-id nm-applet
+
+# Enable tap to click on touchpad
+exec --no-startup-id xinput set-prop "$(xinput list --name | grep -i touchpad)" "libinput Tapping Enabled" 1
+
+# Adjust volume using pactl - properly signal i3blocks
+set $refresh_i3status pkill -SIGRTMIN+10 i3blocks
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# Brightness controls (using brightnessctl) - properly signal i3blocks
+set $refresh_brightness pkill -SIGRTMIN+11 i3blocks
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set +5% && $refresh_brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%- && $refresh_brightness
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Terminal
+bindsym $mod+Return exec alacritty
+
+# Window splitting
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+# Kill focused window
+bindsym $mod+q kill
+
+# Program launcher (rofi)
+bindsym $mod+d exec --no-startup-id rofi -show drun -theme ~/.config/rofi/applaunch/config.rasi
+bindsym $mod+space exec --no-startup-id rofi -show combi
+bindsym $mod+Tab exec --no-startup-id rofi -show window
+bindsym $mod+Shift+w exec --no-startup-id ~/.config/rofi/helper/wifi_launcher.sh
+bindsym $mod+Shift+v exec --no-startup-id ~/.config/rofi/helper/volume_control.pl
+bindsym $mod+Shift+b exec --no-startup-id ~/.config/rofi/helper/brightness_control.pl
+bindsym $mod+Shift+p exec --no-startup-id ~/.config/rofi/powermenu/powermenu.sh
+bindsym $mod+Shift+s exec --no-startup-id flameshot gui
+
+# Alternative focus with arrows
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+# Move focused window
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+
+# Alternative move with arrows
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Fullscreen
+bindsym $mod+f fullscreen toggle
+
+# File explorer
+bindsym $mod+e exec nautilus
+
+# Toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# Focus parent container
+bindsym $mod+a focus parent
+
+# Bluetooth manager
+bindsym $mod+b exec blueman-manager
+
+# Define names for default workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# Switch to workspace
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# Move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Reload/restart i3
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+
+# Exit i3
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# Resize window mode
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym semicolon resize grow width 10 px or 10 ppt
+
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+
+bindsym $mod+r mode "resize"
+
+# Lock screen
+bindsym $mod+l exec --no-startup-id i3lock -i ~/lockscreen.png
+
+# Autolock the screen after 3 minutes of inactivity
+exec --no-startup-id xautolock -detectsleep -time 3 -locker "i3lock -i ~/lockscreen.png"
+
+# Floating windows
+for_window [class="Pavucontrol"] floating enable
+for_window [class="Blueman-manager"] floating enable
+for_window [class="Nm-connection-editor"] floating enable
+for_window [class="feh"] floating enable
+
+# Color definitions (Catppuccin)
+set $rosewater #f5e0dc
+set $flamingo  #f2cdcd
+set $pink      #f5c2e7
+set $mauve     #cba6f7
+set $red       #f38ba8
+set $maroon    #eba0ac
+set $peach     #fab387
+set $yellow    #f9e2af
+set $green     #a6e3a1
+set $teal      #94e2d5
+set $sky       #89dceb
+set $sapphire  #74c7ec
+set $blue      #89b4fa
+set $lavender  #b4befe
+set $text      #cdd6f4
+set $subtext1  #bac2de
+set $subtext0  #a6adc8
+set $overlay2  #9399b2
+set $overlay1  #7f849c
+set $overlay0  #6c7086
+set $surface2  #585b70
+set $surface1  #45475a
+set $surface0  #313244
+set $base      #1e1e2e
+set $mantle    #181825
+set $crust     #11111b
+
+# Window colors
+client.focused           $mauve     $base  $mauve    $rosewater $mauve
+client.focused_inactive  $overlay0  $base  $text     $rosewater $overlay0
+client.unfocused         $overlay0  $base  $text     $rosewater $overlay0
+client.urgent            $peach     $base  $peach    $overlay0  $peach
+client.placeholder       $overlay0  $base  $text     $overlay0  $overlay0
+client.background        $base
+
+# Start i3bar with i3blocks
+bar {
+    status_command i3blocks
+    position bottom
+    font pango:JetBrains Mono 10
+    tray_output primary
+    tray_padding 2
+    
+    colors {
+        background $base
+        statusline $text
+        separator  $overlay0
+        
+        # colorclass        border     background  text
+        focused_workspace   $mauve     $mauve      $base
+        active_workspace    $overlay0  $overlay0   $text
+        inactive_workspace  $overlay0  $base       $text 
+        urgent_workspace    $peach     $peach      $base
+        binding_mode        $pink      $pink       $base
+    }
+}

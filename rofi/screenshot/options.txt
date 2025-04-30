@@ -1,0 +1,3 @@
+area Select_Area
+window Active_Window
+full Full_Screen

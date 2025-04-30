@@ -1,0 +1,6 @@
+#!/bin/bash
+# area-screenshot
+output_dir="$HOME/Pictures/Screenshots"
+mkdir -p "$output_dir"
+filename="$output_dir/${1:-Screenshot from $(date + %Y-%m-%d %H-%M-%S)}.png"
+maim -s "$filename" && notify-send "Screenshot" "Area screenshot saved as $filename"

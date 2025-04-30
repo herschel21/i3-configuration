@@ -1,0 +1,7 @@
+#!/bin/bash
+# full-screenshot
+output_dir="$HOME/Pictures/Screenshots"
+mkdir -p "$output_dir"
+filename="$output_dir/${1:-Screenshot from $(date + %Y-%m-%d %H-%M-%S)}.png"
+maim "$filename" && notify-send "Screenshot" "Full screenshot saved as $filename"
+

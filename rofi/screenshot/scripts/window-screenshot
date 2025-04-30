@@ -1,0 +1,7 @@
+#!/bin/bash
+# window-screenshot
+output_dir="$HOME/Pictures/Screenshots"
+mkdir -p "$output_dir"
+filename="$output_dir/${1:-Screenshot from $(date + %Y-%m-%d %H-%M-%S)}.png"
+maim -i $(xdotool getactivewindow) "$filename" && notify-send "Screenshot" "Window screenshot saved as $filename"
+
