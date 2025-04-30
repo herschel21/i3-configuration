@@ -9,8 +9,8 @@ markup=pango
 
 [vpn]
 label=VPN: 
-command=nmcli con show --active | grep vpn >/dev/null && echo "On" || echo "Off"
-interval=10
+command=nmcli con show --active | grep tun0 >/dev/null && echo "On" || echo "Off"
+interval=1
 color=#fab387
 
 [disk]
