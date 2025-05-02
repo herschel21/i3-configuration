@@ -5,7 +5,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Constants
-readonly REPO_URL="https://github.com/herschel21/i3-configuration/archive/refs/heads/main.zip" # Replace with your actual repo URL
+readonly REPO_URL="https://github.com/herschel21/i3-configuration.git" # Replace with your actual repo URL
 readonly TEMP_DIR="/tmp/i3_config_install_$(date +%s)"
 readonly DEST_DIR="$HOME/.config"
 readonly LOG_FILE="$TEMP_DIR/install.log"
