@@ -16,7 +16,7 @@ color=#fab387
 [disk]
 label=Disk: 
 command=df -h / | awk 'NR==2 {print $4}'
-interval=30
+interval=1
 color=#f5e0dc
 
 [cpu]
